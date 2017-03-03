@@ -1,9 +1,6 @@
-import static spark.Spark.get;
+import static spark.Spark.*;
 
 import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import okhttp3.Authenticator;
 import okhttp3.MediaType;
@@ -30,6 +27,8 @@ public class Main {
     
     public Main()
     {
+        port(Integer.valueOf(System.getenv("PORT")));
+        staticFileLocation("/public");
     	get("/currentTemp", (req, res )-> "Current Temperature is "+currentTemp());
     	get("/access", (req,res) -> access() );
     	get("/callback", (req, res)-> {
