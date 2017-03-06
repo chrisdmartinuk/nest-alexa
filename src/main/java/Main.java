@@ -29,6 +29,7 @@ public class Main {
     {
         port(Integer.valueOf(System.getenv("PORT")));
         staticFileLocation("/public");
+        get("/hello", (req, res) -> "Hello World");
     	get("/currentTemp", (req, res )-> "Current Temperature is "+currentTemp());
     	get("/access", (req,res) -> access() );
     	get("/callback", (req, res)-> {
