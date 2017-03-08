@@ -58,7 +58,7 @@ public class ActionInvocationContext {
 		String capitalizedActionName = actionName.substring(0, 1).toUpperCase() + actionName.substring(1);
 
 		if (slots.isEmpty()) {
-			return String.format("%1$s%2$sIntent", controllerName, capitalizedActionName);
+			return capitalizedActionName;
 		} else {
 			// Make sure all slots actually exist
 			for (String slot : slots) {

@@ -12,6 +12,7 @@ import com.sun.net.httpserver.Authenticator;
 import routing.AlexaController;
 import routing.AlexaResponse;
 import routing.LinkAccountResponse;
+import routing.attributes.FilterFor;
 import routing.attributes.Utterances;
 import routing.providers.AlexaSessionProvider;
 import routing.providers.RequestContextProvider;
@@ -27,7 +28,7 @@ public class NestController extends AlexaController {
 	        this.requestContext = requestContext;
 	        this.session = session;
 	    }
-	    
+	    @FilterFor({"CurrentTemperature"})
 	    @Utterances({
 	    	"What is the temperature inside"
 	    })
