@@ -42,10 +42,12 @@ public class NestController extends AlexaController {
 	    	if ( token == null ) {
 	    		return new LinkAccountResponse();
 	    	}
+	    	System.out.println("token = "+token);
 	    	Request request = Request.Get(Constants.URL_NEST_FIREBASE);
 	    	request.addHeader("Authorization", "Bearer "+token);
 	    	
 	    	String response = request.execute().returnContent().asString();
+	    	System.out.println("nest-data: "+response);
 	    	int temperature = NestAPI.construct(response).getCurrentTemp();
 	    	
 	    	return endSessionResponse("Current temperature is "+temperature);
