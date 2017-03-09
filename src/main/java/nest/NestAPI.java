@@ -1,19 +1,19 @@
 package nest;
-import java.util.ArrayList;
+import java.util.Map;
 
 import com.google.gson.Gson;
 
 public class NestAPI {
 
-	public ArrayList<Device> devices = new ArrayList<>();
+	public DeviceCollection devices;
 	
 	
-	public class Device {
-		ArrayList<Thermostat> theromostats = new ArrayList<>();
+	public class DeviceCollection {
+		Map<String, Thermostat> thermostats;
 	}
 	
 	public class Thermostat {
-		int ambient_temperature_c;
+		double ambient_temperature_c;
 	}
 	
 
@@ -23,11 +23,16 @@ public class NestAPI {
 		return gson.fromJson(nestData, NestAPI.class);
 	}
 	
+	private NestAPI()
+	{
+		
+	}
+	
 
 	
-	public int getCurrentTemp()
+	public double getCurrentTemp()
 	{
-		return devices.get(0).theromostats.get(0).ambient_temperature_c;
+		return devices.thermostats.entrySet().iterator().next().getValue().ambient_temperature_c;
 		
 	}
 }

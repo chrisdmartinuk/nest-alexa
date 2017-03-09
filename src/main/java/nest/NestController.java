@@ -1,5 +1,7 @@
 package nest;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.xml.ws.Response;
 
@@ -48,8 +50,8 @@ public class NestController extends AlexaController {
 	    	
 	    	String response = request.execute().returnContent().asString();
 	    	System.out.println("nest-data: "+response);
-	    	int temperature = NestAPI.construct(response).getCurrentTemp();
+	    	double temperature = NestAPI.construct(response).getCurrentTemp();
 	    	
 	    	return endSessionResponse("Current temperature is "+temperature);
-	    }	
+	    }
 }
