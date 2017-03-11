@@ -14,11 +14,11 @@ public class NestSpeechServlet extends SpeechletServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Enumeration<String> iter = request.getAttributeNames();
-		System.out.println("Attribute:");
+		Enumeration<String> iter = request.getHeaderNames();
+		System.out.println("Header:");
 		while ( iter.hasMoreElements() ) {
 			String s = iter.nextElement();
-			System.out.println(s+" "+request.getAttribute(s));
+			System.out.println(s+" "+request.getHeader(s));
 		}
 		super.doPost(request, response);
 	}
