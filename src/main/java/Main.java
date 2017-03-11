@@ -20,6 +20,7 @@ import routing.SpeechRouter;
 import routing.providers.AlexaSessionProvider;
 import routing.providers.RequestContextProvider;
 import routing.servlets.IntentSchemaServlet;
+import routing.servlets.NestSpeechServlet;
 import routing.servlets.RoutingSpeechlet;
 import routing.servlets.SampleUtterancesServlet;
 
@@ -76,7 +77,7 @@ public class Main {
                     protected void configureServlets() {
                         serve("/sample-utterances").with(SampleUtterancesServlet.class);
                         serve("/intent-schema").with(IntentSchemaServlet.class);
-                        serve("/nest").with(SpeechletServlet.class);
+                        serve("/nest").with(NestSpeechServlet.class);
                     }
                 });
             }
