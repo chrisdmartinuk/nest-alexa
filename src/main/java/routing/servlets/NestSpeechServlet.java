@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.amazon.speech.speechlet.servlet.SpeechletServlet;
+import com.google.inject.Singleton;
 
+@Singleton
 public class NestSpeechServlet extends SpeechletServlet {
 
 	@Override
