@@ -36,6 +36,10 @@ public class NestController extends AlexaController {
 	    })
 	    public AlexaResponse currentTemperature() throws IOException
 	    {
+	    	System.out.println("Attributes");
+	    	session.getSession().getAttributes().entrySet().forEach(e -> System.out.println(e.getKey()+" "+e.getValue()));
+	    	System.out.println("--");
+	    	System.out.println();
 	    	if ( session.getSession().getUser() == null ) {
 	    		return new LinkAccountResponse();
 	    	}

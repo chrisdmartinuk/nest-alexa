@@ -28,11 +28,8 @@ public class NestAPI {
 		
 	}
 	
-
-	
 	public double getCurrentTemp()
 	{
 		return devices.thermostats.entrySet().iterator().next().getValue().ambient_temperature_c;
-		
 	}
 }

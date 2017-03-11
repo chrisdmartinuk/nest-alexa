@@ -7,8 +7,6 @@ public class CommonIntentsController extends AlexaController {
 
     @Utterances({})
     public AlexaResponse welcome() {
-
-
         return endSessionResponse("Welcome to the chris's nest skill");
     }
 }
