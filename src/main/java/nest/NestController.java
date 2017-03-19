@@ -2,8 +2,8 @@ package nest;
 
 import java.io.IOException;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
 
 import com.google.inject.Inject;
@@ -86,10 +86,11 @@ public class NestController extends AlexaController {
 		ContentType contentType = ContentType.parse("application/octet-stream");
 		String value = "{\"away\": \"away\"}";
 		request.bodyString(value, contentType);
-		HttpResponse returnResponse = request.execute().returnResponse();
-		if (returnResponse.getStatusLine().getStatusCode() == 200) {
+		Response returnResponse = request.execute();
+		if (returnResponse.returnResponse().getStatusLine().getStatusCode() == 200) {
 			return endSessionResponse("Heating set to away");
 		} else {
+			System.out.println(returnResponse.returnContent().asString());
 			return endSessionResponse("Failed to update heating");
 		}
 
