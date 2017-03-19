@@ -80,7 +80,7 @@ public class NestController extends AlexaController {
 		String response = request.execute().returnContent().asString();
 		NestAPI nestAPI = NestAPI.construct(response);
 
-		String url = Constants.URL_NEST_FIREBASE + "devices/thermostats/" + nestAPI.getCurrentDeviceID();
+		String url = Constants.URL_NEST_FIREBASE + "/devices/thermostats/" + nestAPI.getCurrentDeviceID();
 		request = addAuthorisation(Request.Patch(url));
 
 		ContentType contentType = ContentType.parse("application/octet-stream");
