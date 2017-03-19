@@ -93,6 +93,7 @@ public class NestController extends AlexaController {
 		NestAPI nestAPI = NestAPI.construct(response);
 
 		String url = Constants.URL_NEST_FIREBASE + "/devices/thermostats/" + nestAPI.getCurrentDeviceID();
+		System.out.println(url);
 		request = addAuthorisation(Request.Put(url));
 		ContentType contentType = ContentType.parse("application/octet-stream");
 		String value = "{\"away\": \"away\"}";
