@@ -2,17 +2,12 @@ package nest;
 
 import java.io.IOException;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolException;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.protocol.HttpContext;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 
 import com.google.inject.Inject;
 
@@ -69,24 +64,7 @@ public class NestController extends AlexaController {
 	 * @return executor
 	 */
 	private Executor constructHTTPExcutor() {
-		CloseableHttpClient httpclient = HttpClientBuilder.create().setRedirectStrategy(new DefaultRedirectStrategy() {
-			public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context) {
-				boolean isRedirect = false;
-				try {
-					isRedirect = super.isRedirected(request, response, context);
-				} catch (ProtocolException e) {
-					e.printStackTrace();
-				}
-				if (!isRedirect) {
-					int responseCode = response.getStatusLine().getStatusCode();
-					if (responseCode == 301 || responseCode == 302) {
-						return true;
-					}
-				}
-				return isRedirect;
-			}
-		}).build();
-		return Executor.newInstance(httpclient);
+		return Executor.newInstance(HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build());
 	}
 
 	@FilterFor({ "CurrentTemperature" })
