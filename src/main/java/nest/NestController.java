@@ -87,10 +87,10 @@ public class NestController extends AlexaController {
 		String value = "{\"away\": \"away\"}";
 		request.bodyString(value, contentType);
 		Response returnResponse = request.execute();
+		System.out.println(returnResponse.returnContent().asString());
 		if (returnResponse.returnResponse().getStatusLine().getStatusCode() == 200) {
 			return endSessionResponse("Heating set to away");
 		} else {
-			System.out.println(returnResponse.returnContent().asString());
 			return endSessionResponse("Failed to update heating");
 		}
 
