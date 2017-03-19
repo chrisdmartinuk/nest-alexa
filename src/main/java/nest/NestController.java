@@ -2,9 +2,12 @@ package nest;
 
 import java.io.IOException;
 
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 
 import com.google.inject.Inject;
 
@@ -55,6 +58,15 @@ public class NestController extends AlexaController {
 		return request.addHeader(AUTH, BEARER + token);
 	}
 
+	/**
+	 * Construct executor that can follow redirects
+	 * 
+	 * @return executor
+	 */
+	private Executor constructHTTPExcutor() {
+		return Executor.newInstance(HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build());
+	}
+
 	@FilterFor({ "CurrentTemperature" })
 	@Utterances({ "What is the temperature inside" })
 	public AlexaResponse currentTemperature() throws IOException {
@@ -82,11 +94,10 @@ public class NestController extends AlexaController {
 
 		String url = Constants.URL_NEST_FIREBASE + "/devices/thermostats/" + nestAPI.getCurrentDeviceID();
 		request = addAuthorisation(Request.Patch(url));
-
 		ContentType contentType = ContentType.parse("application/octet-stream");
 		String value = "{\"away\": \"away\"}";
 		request.bodyString(value, contentType);
-		Response returnResponse = request.execute();
+		Response returnResponse = constructHTTPExcutor().execute(request);
 		System.out.println(returnResponse.returnContent().asString());
 		if (returnResponse.returnResponse().getStatusLine().getStatusCode() == 200) {
 			return endSessionResponse("Heating set to away");
