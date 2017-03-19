@@ -64,7 +64,6 @@ public class NestController extends AlexaController {
 		}
 		String response = request.execute().returnContent().asString();
 		NestAPI nestAPI = NestAPI.construct(response);
-		System.out.println(response);
 		double temperature = nestAPI.getCurrentTemp();
 		TemperatureUnit unit = nestAPI.getCurrentUnit();
 
@@ -82,7 +81,7 @@ public class NestController extends AlexaController {
 		NestAPI nestAPI = NestAPI.construct(response);
 
 		String url = Constants.URL_NEST_FIREBASE + "devices/thermostats/" + nestAPI.getCurrentDeviceID();
-		request = addAuthorisation(Request.Get(url));
+		request = addAuthorisation(Request.Patch(url));
 
 		ContentType contentType = ContentType.parse("application/octet-stream");
 		String value = "{\"away\": \"away\"}";
