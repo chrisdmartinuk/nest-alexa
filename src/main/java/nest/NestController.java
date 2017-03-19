@@ -2,7 +2,9 @@ package nest;
 
 import java.io.IOException;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 
 import com.google.inject.Inject;
 
@@ -18,6 +20,8 @@ import routing.providers.RequestContextProvider;
 
 public class NestController extends AlexaController {
 
+	private static final String AUTH = "Authorization";
+	private static final String BEARER = "Bearer ";
 	private final RequestContextProvider requestContext;
 	private final AlexaSessionProvider session;
 
@@ -27,30 +31,68 @@ public class NestController extends AlexaController {
 		this.session = session;
 	}
 
+	/**
+	 * Generate a request to NEST with correct authorisation header. Returns
+	 * null if cannot find access token
+	 * 
+	 * @return request with authorisation header, or null if cannot find the
+	 *         access token to authorise with nest. In which case
+	 *         {@link LinkAccountResponse} should be returned to alexa.
+	 */
+	private Request prepareAuthorisedRequest() {
+		if (session.getSession().getUser() == null) {
+			return null;
+		}
+		Request request = Request.Get(Constants.URL_NEST_FIREBASE);
+		return addAuthorisation(request);
+	}
+
+	private Request addAuthorisation(Request request) {
+		String token = session.getSession().getUser().getAccessToken();
+		if (token == null) {
+			return null;
+		}
+		return request.addHeader(AUTH, BEARER + token);
+	}
+
 	@FilterFor({ "CurrentTemperature" })
 	@Utterances({ "What is the temperature inside" })
 	public AlexaResponse currentTemperature() throws IOException {
-		System.out.println("Attributes");
-		session.getSession().getAttributes().entrySet()
-				.forEach(e -> System.out.println(e.getKey() + " " + e.getValue()));
-		System.out.println("--");
-		System.out.println();
-		if (session.getSession().getUser() == null) {
+		Request request = prepareAuthorisedRequest();
+		if (request == null) {
 			return new LinkAccountResponse();
 		}
-		String token = session.getSession().getUser().getAccessToken();
-
-		if (token == null) {
-			return new LinkAccountResponse();
-		}
-		Request request = Request.Get(Constants.URL_NEST_FIREBASE);
-		request.addHeader("Authorization", "Bearer " + token);
-
 		String response = request.execute().returnContent().asString();
 		NestAPI nestAPI = NestAPI.construct(response);
+		System.out.println(response);
 		double temperature = nestAPI.getCurrentTemp();
 		TemperatureUnit unit = nestAPI.getCurrentUnit();
 
 		return endSessionResponse("Current temperature is " + temperature + " degrees " + unit);
+	}
+
+	@FilterFor({ "SetAway" })
+	@Utterances({ "I'm going out" })
+	public AlexaResponse setAway() throws IOException {
+		Request request = prepareAuthorisedRequest();
+		if (request == null) {
+			return new LinkAccountResponse();
+		}
+		String response = request.execute().returnContent().asString();
+		NestAPI nestAPI = NestAPI.construct(response);
+
+		String url = Constants.URL_NEST_FIREBASE + "devices/thermostats/" + nestAPI.getCurrentDeviceID();
+		request = addAuthorisation(Request.Get(url));
+
+		ContentType contentType = ContentType.parse("application/octet-stream");
+		String value = "{\"away\": \"away\"}";
+		request.bodyString(value, contentType);
+		HttpResponse returnResponse = request.execute().returnResponse();
+		if (returnResponse.getStatusLine().getStatusCode() == 200) {
+			return endSessionResponse("Heating set to away");
+		} else {
+			return endSessionResponse("Failed to update heating");
+		}
+
 	}
 }

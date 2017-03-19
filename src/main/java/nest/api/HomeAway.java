@@ -2,13 +2,12 @@ package nest.api;
 
 import nest.api.deseralise.SeralizableEnum;
 
-public enum TemperatureUnit implements SeralizableEnum<TemperatureUnit> {
-
-	CELCIUS("C"), FAHRENHEIT("F");
+public enum HomeAway implements SeralizableEnum<HomeAway> {
+	HOME("home"), AWAY("away");
 
 	private String jsonValue;
 
-	private TemperatureUnit(String value) {
+	private HomeAway(String value) {
 		this.jsonValue = value;
 	}
 
